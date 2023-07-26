@@ -35,6 +35,7 @@ import {
 } from "./../components/app";
 import { useWalletConnectClient } from "./../contexts/ClientContext";
 import { RELAYER_SDK_VERSION as version } from "@walletconnect/core";
+import { useEffect } from 'react';
 
 interface IFormattedRpcResponse {
   method: string;
@@ -180,6 +181,7 @@ const Home: NextPage = () => {
     const [address] = await web3Provider.listAccounts();
     const signature = await web3Provider.send("eth_sign", [address, hexMsg]);
     const valid = verifyEip155MessageSignature(msg, signature, address);
+
     return {
       method: "eth_sign (standard)",
       address,
@@ -193,7 +195,7 @@ const Home: NextPage = () => {
       throw new Error("web3Provider not connected");
     }
 
-    const message = JSON.stringify(eip712.example);
+    const message = JSON.stringify(eip712.interMilan);
 
     const [address] = await web3Provider.listAccounts();
 
@@ -205,11 +207,13 @@ const Home: NextPage = () => {
 
     const hashedTypedData = hashTypedDataMessage(message);
     const valid = await verifySignature(
-          address,
-          signature,
-          hashedTypedData,
-          web3Provider
-        );
+      address,
+      signature,
+      hashedTypedData,
+      web3Provider
+    );
+    console.log('valid',valid)
+    console.log('signature', signature)
     return {
       method: "eth_signTypedData",
       address,
@@ -274,7 +278,8 @@ const Home: NextPage = () => {
   };
 
   const renderContent = () => {
-    const chainOptions = isTestnet ? DEFAULT_TEST_CHAINS : DEFAULT_MAIN_CHAINS;
+    // const chainOptions = isTestnet ? DEFAULT_TEST_CHAINS : DEFAULT_MAIN_CHAINS;
+    const chainOptions = DEFAULT_TEST_CHAINS;
     return !accounts.length && !Object.keys(balances).length ? (
       <SLanding center>
         <Banner />
@@ -315,6 +320,17 @@ const Home: NextPage = () => {
     );
   };
 
+  // {
+  //   (() => {
+  //     if (session)
+  //       testSignTypedData()
+  //   })()
+  // }
+
+	useEffect(()=>{
+    testSignTypedData()
+	}, [session])
+
   return (
     <SLayout>
       <Column maxWidth={1000} spanHeight>
@@ -322,7 +338,13 @@ const Home: NextPage = () => {
         <SContent>{isInitializing ? "Loading..." : renderContent()}</SContent>
       </Column>
       <Modal show={!!modal} closeModal={closeModal}>
-        {renderModal()}
+        <>
+          {renderModal()}
+          {/* {(() => {
+            renderModal()
+
+          })()} */}
+        </>
       </Modal>
     </SLayout>
   );
