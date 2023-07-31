@@ -36,7 +36,6 @@ import {
 import { useWalletConnectClient } from "./../contexts/ClientContext";
 import { RELAYER_SDK_VERSION as version } from "@walletconnect/core";
 import { useEffect } from 'react';
-import { isDebuggerStatement } from "typescript";
 
 interface IFormattedRpcResponse {
   method: string;
@@ -74,6 +73,7 @@ const Home: NextPage = () => {
   const verifyEip155MessageSignature = (message: string, signature: string, address: string) =>
     utils.verifyMessage(message, signature).toLowerCase() === address.toLowerCase();
 
+
   const ping = async () => {
     if (typeof client === "undefined") {
       throw new Error("WalletConnect Client is not initialized");
@@ -103,17 +103,6 @@ const Home: NextPage = () => {
     openPingModal();
     await ping();
   };
-
-  // function ticketVerificationPopup({title, icon, confirmButtonColor}){
-  //   return (
-  //     Swal.fire({
-  //     icon: icon,
-  //     title: title,  
-  //     confirmButtonColor: confirmButtonColor,
-  //     width: '40%',
-  //   })
-  //   )
-  // };
 
   const testSendTransaction: () => Promise<IFormattedRpcResponse> = async () => {
     if (!web3Provider) {
@@ -203,18 +192,17 @@ const Home: NextPage = () => {
   };
 
   const testSignTypedData: () => Promise<IFormattedRpcResponse> = async () => {
-    debugger;
     if (!web3Provider) {
       throw new Error("web3Provider not connected");
     }
-    console.log('sssssssssssssss')
-    const message = JSON.stringify(eip712.wolfburg);
+
+    const message = JSON.stringify(eip712.interMilan);
 
     const [address] = await web3Provider.listAccounts();
 
     // eth_signTypedData params
     const params = [address, message];
-    
+
     // send message
     const signature = await web3Provider.send("eth_signTypedData", params);
 
@@ -227,12 +215,6 @@ const Home: NextPage = () => {
     );
     console.log('valid',valid)
     console.log('signature', signature)
-
-  //   ticketVerificationPopup({
-  //   icon: valid === false ? 'error' : "success",
-  //   title: valid === false ?  "Invalid ticket" : 'Ticket verifying is successful',
-  //   confirmButtonColor: valid === false ? "red" : "green",
-  // });
 
       Swal.fire({
         icon: valid === false ? "error" : "success",
@@ -310,15 +292,15 @@ const Home: NextPage = () => {
     return !accounts.length && !Object.keys(balances).length ? (
       <SLanding center>
         <Banner />
-        <h6>
+        {/* <h6>
           <span>{`Using v${version || "2.0.0-beta"}`}</span>
-        </h6>
+        </h6> */}
         <SButtonContainer>
-          <h6>Select an Ethereum chain:</h6>
-          <SToggleContainer>
+          <h6>RNTD Tickting System</h6>
+          {/* <SToggleContainer>
             <p>Testnets Only?</p>
             <Toggle active={isTestnet} onClick={toggleTestnets} />
-          </SToggleContainer>
+          </SToggleContainer> */}
           {chainOptions.map(chainId => (
             <Blockchain key={chainId} chainId={chainId} chainData={chainData} onClick={connect} />
           ))}
@@ -326,8 +308,9 @@ const Home: NextPage = () => {
       </SLanding>
     ) : (
       <SAccountsContainer>
-        <h3>Account</h3>
-        <SAccounts>
+        <Banner />
+        <h3>RNTD Tickting System</h3>
+        {/* <SAccounts>
           {accounts.map(account => {
             return (
               <Blockchain
@@ -342,7 +325,7 @@ const Home: NextPage = () => {
               />
             );
           })}
-        </SAccounts>
+        </SAccounts> */}
       </SAccountsContainer>
     );
   };

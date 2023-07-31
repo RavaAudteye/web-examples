@@ -5,12 +5,13 @@ const SBannerWrapper = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+  margin-top: 20%;
 `;
 
 const SBanner = styled.div`
   width: 275px;
-  height: 45px;
-  background: url(/assets/walletconnect.png) no-repeat;
+  height: 100px;
+  background: url(/assets/RNTD-Logo-white.jpg) no-repeat;
   background-size: cover;
   background-position: center;
 `;
