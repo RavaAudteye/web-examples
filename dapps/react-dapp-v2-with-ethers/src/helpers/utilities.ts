@@ -142,6 +142,9 @@ export async function verifySignature(
 ): Promise<boolean> {
   const bytecode = await provider.getCode(address);
   if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
+    if (sig == 'None'){
+      return false;
+    }
     const signer = recoverAddress(sig, hash);
     return signer.toLowerCase() === address.toLowerCase();
   } else {

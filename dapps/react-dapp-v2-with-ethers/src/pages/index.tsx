@@ -4,7 +4,7 @@ import * as encoding from "@walletconnect/encoding";
 import { BigNumber, utils } from "ethers";
 import { TypedDataField } from "@ethersproject/abstract-signer";
 import { Transaction } from "@ethereumjs/tx";
-
+import Swal from 'sweetalert2';
 import Banner from "./../components/Banner";
 import Blockchain from "./../components/Blockchain";
 import Column from "./../components/Column";
@@ -36,6 +36,7 @@ import {
 import { useWalletConnectClient } from "./../contexts/ClientContext";
 import { RELAYER_SDK_VERSION as version } from "@walletconnect/core";
 import { useEffect } from 'react';
+import { isDebuggerStatement } from "typescript";
 
 interface IFormattedRpcResponse {
   method: string;
@@ -102,6 +103,17 @@ const Home: NextPage = () => {
     openPingModal();
     await ping();
   };
+
+  // function ticketVerificationPopup({title, icon, confirmButtonColor}){
+  //   return (
+  //     Swal.fire({
+  //     icon: icon,
+  //     title: title,  
+  //     confirmButtonColor: confirmButtonColor,
+  //     width: '40%',
+  //   })
+  //   )
+  // };
 
   const testSendTransaction: () => Promise<IFormattedRpcResponse> = async () => {
     if (!web3Provider) {
@@ -191,17 +203,18 @@ const Home: NextPage = () => {
   };
 
   const testSignTypedData: () => Promise<IFormattedRpcResponse> = async () => {
+    debugger;
     if (!web3Provider) {
       throw new Error("web3Provider not connected");
     }
-
-    const message = JSON.stringify(eip712.interMilan);
+    console.log('sssssssssssssss')
+    const message = JSON.stringify(eip712.wolfburg);
 
     const [address] = await web3Provider.listAccounts();
 
     // eth_signTypedData params
     const params = [address, message];
-
+    
     // send message
     const signature = await web3Provider.send("eth_signTypedData", params);
 
@@ -214,6 +227,20 @@ const Home: NextPage = () => {
     );
     console.log('valid',valid)
     console.log('signature', signature)
+
+  //   ticketVerificationPopup({
+  //   icon: valid === false ? 'error' : "success",
+  //   title: valid === false ?  "Invalid ticket" : 'Ticket verifying is successful',
+  //   confirmButtonColor: valid === false ? "red" : "green",
+  // });
+
+      Swal.fire({
+        icon: valid === false ? "error" : "success",
+        title: valid === false ? "Invalid ticket" : "Ticket verifying is successful",
+        confirmButtonColor: valid === false ? "red" : "green",
+        width: "40%",
+      });
+
     return {
       method: "eth_signTypedData",
       address,
